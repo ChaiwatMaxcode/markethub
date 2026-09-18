@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarketHub - ตลาดซื้อขายออนไลน์</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+    }
+
+    body {
+      background: #f5f6f8;
+      color: #222;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    /* ================= HEADER ================= */
+
+    header {
+      background: white;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: auto;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      padding: 10px 20px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+      color: #2563eb;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 13px 45px 13px 18px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      font-size: 15px;
+      transition: .2s;
+    }
+
+    .search-box input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 20px;
+      pointer-events: none;
+    }
+
+    .sell-btn {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      white-space: nowrap;
+      transition: .2s;
+    }
+
+    .sell-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: white;
+      padding: 55px 20px;
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      opacity: .9;
+    }
+
+    /* ================= MAIN ================= */
+
+    main {
+      max-width: 1200px;
+      margin: 35px auto;
+      padding: 0 20px;
+      min-height: 400px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title h2 {
+      font-size: 25px;
+    }
+
+    .product-count {
+      color: #777;
+      font-size: 14px;
+    }
+
+    /* ================= PRODUCTS ================= */
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 3px 15px rgba(0,0,0,.07);
+      transition: .2s;
+      min-width: 0;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,.12);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: #eee;
+      display: block;
+    }
+
+    .product-info {
+      padding: 16px;
+    }
+
+    .product-name {
+      font-size: 17px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .price {
+      color: #ef4444;
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .condition {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #16a34a;
+      padding: 5px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .location {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .description {
+      color: #666;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 8px;
+      min-height: 20px;
+      word-break: break-word;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .contact-btn,
+    .delete-btn {
+      flex: 1;
+      padding: 9px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    .contact-btn {
+      border: none;
+      background: #2563eb;
+      color: white;
+    }
+
+    .contact-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .delete-btn {
+      border: 1px solid #ddd;
+      background: white;
+      color: #ef4444;
+    }
+
+    .delete-btn:hover {
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+
+    /* ================= MODAL ================= */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 200;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      width: 100%;
+      max-width: 550px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 18px;
+      padding: 25px;
+      animation: modalShow .2s ease;
+    }
+
+    @keyframes modalShow {
+      from {
+        opacity: 0;
+        transform: translateY(15px) scale(.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      font-size: 23px;
+    }
+
+    .close-btn {
+      border: none;
+      background: #f1f1f1;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      transition: .2s;
+    }
+
+    .close-btn:hover {
+      background: #e5e5e5;
+    }
+
+    /* ================= FORM ================= */
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      outline: none;
+      font-size: 14px;
+      background: white;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .image-upload {
+      border: 2px dashed #bbb;
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      cursor: pointer;
+      background: #fafafa;
+      transition: .2s;
+    }
+
+    .image-upload:hover {
+      border-color: #2563eb;
+      background: #f5f8ff;
+    }
+
+    .image-upload input {
+      display: none;
+    }
+
+    .upload-icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+
+    .upload-text {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .upload-hint {
+      color: #777;
+      font-size: 12px;
+    }
+
+    #preview {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .submit-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .submit-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 70px 20px;
+      color: #777;
+    }
+
+    .empty-icon {
+      font-size: 60px;
+      margin-bottom: 15px;
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+      margin-top: 70px;
+      background: #111827;
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 900px) {
+      .products {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+
+      .navbar {
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .logo {
+        font-size: 20px;
+      }
+
+      .search-box {
+        order: 3;
+        flex-basis: 100%;
+      }
+
+      .sell-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+      }
+
+      .hero {
+        padding: 40px 20px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+
+      .products {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .product-image {
+        height: 160px;
+      }
+
+      .product-info {
+        padding: 12px;
+      }
+
+      .product-name {
+        font-size: 15px;
+      }
+
+      .price {
+        font-size: 18px;
+      }
+
+      .product-actions {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 420px) {
+
+      .products {
+        grid-template-columns: 1fr;
+      }
+
+      .product-image {
+        height: 220px;
+      }
+
+      .section-title {
+        align-items: flex-start;
+        gap: 10px;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+  <div class="navbar">
+
+    <div class="logo" onclick="resetSearch()">
+      🛒 MarketHub
+    </div>
+
+    <div class="search-box">
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="ค้นหาสินค้า..."
+        autocomplete="off"
+      >
+
+      <span class="search-icon">🔍</span>
+
+    </div>
+
+    <button
+      class="sell-btn"
+      type="button"
+      onclick="openModal()"
+    >
+      ＋ ลงขาย
+    </button>
+
+  </div>
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+  <div class="hero-content">
+
+    <h1>ตลาดซื้อขายออนไลน์</h1>
+
+    <p>
+      ลงขายสินค้าได้ง่าย ๆ พร้อมรูปภาพและรายละเอียดสินค้า
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- ================= MAIN ================= -->
+
+<main>
+
+  <div class="section-title">
+
+    <h2>สินค้าล่าสุด</h2>
+
+    <span
+      class="product-count"
+      id="productCount"
+    >
+      0 รายการ
+    </span>
+
+  </div>
+
+  <div
+    class="products"
+    id="productList"
+  ></div>
+
+</main>
+
+
+<!-- ================= MODAL ================= -->
+
+<div
+  class="modal"
+  id="sellModal"
+>
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+
+      <h2>ลงขายสินค้า</h2>
+
+      <button
+        class="close-btn"
+        type="button"
+        onclick="closeModal()"
+      >
+        ✕
+      </button>
+
+    </div>
+
+
+    <form id="productForm">
+
+      <!-- รูป -->
+
+      <div class="form-group">
+
+        <label>รูปสินค้า</label>
+
+        <label class="image-upload">
+
+          <input
+            type="file"
+            id="imageInput"
+            accept="image/jpeg,image/png,image/webp"
+            required
+          >
+
+          <div class="upload-icon">
+            📷
+          </div>
+
+          <div class="upload-text">
+            คลิกเพื่อเลือกรูปสินค้า
+          </div>
+
+          <small class="upload-hint">
+            รองรับ JPG / PNG / WEBP
+          </small>
+
+          <img
+            id="preview"
+            alt="ตัวอย่างรูปสินค้า"
+          >
+
+        </label>
+
+      </div>
+
+
+      <!-- ชื่อ -->
+
+      <div class="form-group">
+
+        <label for="productName">
+          ชื่อสินค้า
+        </label>
+
+        <input
+          type="text"
+          id="productName"
+          placeholder="เช่น iPhone 13 Pro"
+          maxlength="100"
+          required
+        >
+
+      </div>
+
+
+      <!-- ราคา -->
+
+      <div class="form-group">
+
+        <label for="productPrice">
+          ราคา
+        </label>
+
+        <input
+          type="number"
+          id="productPrice"
+          placeholder="เช่น 15900"
+          min="0"
+          step="1"
+          required
+        >
+
+      </div>
+
+
+      <!-- สภาพ -->
+
+      <div class="form-group">
+
+        <label for="productCondition">
+          สภาพสินค้า
+        </label>
+
+        <select id="productCondition">
+
+          <option value="มือหนึ่ง">
+            มือหนึ่ง
+          </option>
+
+          <option value="มือสอง">
+            มือสอง
+          </option>
+
+          <option value="สภาพดี">
+            สภาพดี
+          </option>
+
+          <option value="มีตำหนิ">
+            มีตำหนิ
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- สถานที่ -->
+
+      <div class="form-group">
+
+        <label for="productLocation">
+          สถานที่
+        </label>
+
+        <input
+          type="text"
+          id="productLocation"
+          placeholder="เช่น เชียงราย"
+          maxlength="100"
+          required
+        >
+
+      </div>
+
+
+      <!-- รายละเอียด -->
+
+      <div class="form-group">
+
+        <label for="productDescription">
+          รายละเอียดสินค้า
+        </label>
+
+        <textarea
+          id="productDescription"
+          placeholder="รายละเอียดเพิ่มเติม..."
+          maxlength="500"
+        ></textarea>
+
+      </div>
+
+
+      <button
+        type="submit"
+        class="submit-btn"
+        id="submitBtn"
+      >
+        ลงขายสินค้า
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+  <p>
+    © 2026 MarketHub
+  </p>
+
+  <p style="margin-top:8px; opacity:.7;">
+    เว็บไซต์ตัวอย่างสำหรับซื้อขายสินค้า
+  </p>
+
+</footer>
+
+
+<script>
+
+  /* =========================================
+     DATA
+  ========================================= */
+
+  const defaultProducts = [
+
+    {
+      id: 1,
+      name: "iPhone 13 Pro",
+      price: 15900,
+      condition: "สภาพดี",
+      location: "เชียงราย",
+      description: "เครื่องใช้งานปกติ ไม่มีปัญหา",
+      image:
+        "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800"
+    },
+
+    {
+      id: 2,
+      name: "Gaming Mouse",
+      price: 890,
+      condition: "มือสอง",
+      location: "กรุงเทพฯ",
+      description: "เมาส์เกมมิ่ง ใช้งานปกติ",
+      image:
+        "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800"
+    },
+
+    {
+      id: 3,
+      name: "Mechanical Keyboard",
+      price: 1490,
+      condition: "สภาพดี",
+      location: "เชียงใหม่",
+      description: "คีย์บอร์ด Mechanical RGB",
+      image:
+        "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800"
+    }
+
+  ];
+
+
+  let products = loadProducts();
+
+
+  /* =========================================
+     LOAD DATA
+  ========================================= */
+
+  function loadProducts() {
+
+    try {
+
+      const saved =
+        localStorage.getItem("products");
+
+      if (!saved) {
+
+        return defaultProducts;
+
+      }
+
+      const parsed =
+        JSON.parse(saved);
+
+      if (!Array.isArray(parsed)) {
+
+        return defaultProducts;
+
+      }
+
+      return parsed;
+
+    } catch (error) {
+
+      console.error(
+        "ไม่สามารถโหลดข้อมูลสินค้าได้:",
+        error
+      );
+
+      return defaultProducts;
+
+    }
+
+  }
+
+
+  /* =========================================
+     SAVE DATA
+  ========================================= */
+
+  function saveProducts() {
+
+    try {
+
+      localStorage.setItem(
+        "products",
+        JSON.stringify(products)
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "ไม่สามารถบันทึกข้อมูลได้ อาจเป็นเพราะพื้นที่จัดเก็บเต็ม"
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     ESCAPE HTML
+  ========================================= */
+
+  function escapeHTML(value) {
+
+    if (value === null || value === undefined) {
+      return "";
+    }
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================================
+     RENDER PRODUCTS
+  ========================================= */
+
+  function renderProducts(list = products) {
+
+    const container =
+      document.getElementById("productList");
+
+    container.innerHTML = "";
+
+    document.getElementById("productCount")
+      .textContent =
+      `${list.length} รายการ`;
+
+
+    if (list.length === 0) {
+
+      container.innerHTML = `
+
+        <div class="empty">
+
+          <div class="empty-icon">
+            📦
+          </div>
+
+          <h3>
+            ไม่พบสินค้า
+          </h3>
+
+          <p>
+            ลองค้นหาด้วยคำอื่น
+          </p>
+
+        </div>
+
+      `;
+
+      return;
+
+    }
+
+
+    list.forEach(product => {
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "product-card";
+
+
+      const image =
+        escapeHTML(product.image);
+
+      const name =
+        escapeHTML(product.name);
+
+      const condition =
+        escapeHTML(product.condition);
+
+      const location =
+        escapeHTML(product.location);
+
+      const description =
+        escapeHTML(product.description);
+
+
+      card.innerHTML = `
+
+        <img
+          src="${image}"
+          class="product-image"
+          alt="${name}"
+          onerror="this.src='https://via.placeholder.com/800x600?text=No+Image'"
+        >
+
+        <div class="product-info">
+
+          <div class="product-name">
+            ${name}
+          </div>
+
+          <div class="price">
+            ฿${Number(product.price || 0).toLocaleString()}
+          </div>
+
+          <span class="condition">
+            ${condition}
+          </span>
+
+          <div class="location">
+            📍 ${location}
+          </div>
+
+          <div class="description">
+            ${description || "ไม่มีรายละเอียดสินค้า"}
+          </div>
+
+          <div class="product-actions">
+
+            <button
+              class="contact-btn"
+              type="button"
+              onclick="contactSeller(${Number(product.id)})"
+            >
+              💬 สนใจสินค้า
+            </button>
+
+            <button
+              class="delete-btn"
+              type="button"
+              onclick="deleteProduct(${Number(product.id)})"
+            >
+              🗑️ ลบ
+            </button>
+
+          </div>
+
+        </div>
+
+      `;
+
+      container.appendChild(card);
+
+    });
+
+  }
+
+
+  /* =========================================
+     SEARCH
+  ========================================= */
+
+  function searchProducts() {
+
+    const keyword =
+      document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+
+    if (!keyword) {
+
+      renderProducts();
+
+      return;
+
+    }
+
+
+    const filtered =
+      products.filter(product => {
+
+        const name =
+          String(product.name || "")
+            .toLowerCase();
+
+        const location =
+          String(product.location || "")
+            .toLowerCase();
+
+        const condition =
+          String(product.condition || "")
+            .toLowerCase();
+
+        const description =
+          String(product.description || "")
+            .toLowerCase();
+
+
+        return (
+          name.includes(keyword) ||
+          location.includes(keyword) ||
+          condition.includes(keyword) ||
+          description.includes(keyword)
+        );
+
+      });
+
+
+    renderProducts(filtered);
+
+  }
+
+
+  /* =========================================
+     RESET SEARCH
+  ========================================= */
+
+  function resetSearch() {
+
+    document
+      .getElementById("searchInput")
+      .value = "";
+
+    renderProducts();
+
+  }
+
+
+  /* =========================================
+     MODAL
+  ========================================= */
+
+  function openModal() {
+
+    document
+      .getElementById("sellModal")
+      .classList.add("active");
+
+    document.body.classList.add("modal-open");
+
+    setTimeout(() => {
+
+      document
+        .getElementById("productName")
+        .focus();
+
+    }, 100);
+
+  }
+
+
+  function closeModal() {
+
+    document
+      .getElementById("sellModal")
+      .classList.remove("active");
+
+    document.body.classList.remove("modal-open");
+
+  }
+
+
+  /* =========================================
+     RESET FORM
+  ========================================= */
+
+  function resetForm() {
+
+    document
+      .getElementById("productForm")
+      .reset();
+
+    const preview =
+      document.getElementById("preview");
+
+    preview.src = "";
+
+    preview.style.display = "none";
+
+  }
+
+
+  /* =========================================
+     IMAGE PREVIEW
+  ========================================= */
+
+  document
+    .getElementById("imageInput")
+    .addEventListener(
+      "change",
+      function() {
+
+        const file =
+          this.files[0];
+
+        if (!file) {
+
+          return;
+
+        }
+
+
+        const allowedTypes = [
+          "image/jpeg",
+          "image/png",
+          "image/webp"
+        ];
+
+
+        if (!allowedTypes.includes(file.type)) {
+
+          alert(
+            "กรุณาเลือกไฟล์ JPG, PNG หรือ WEBP"
+          );
+
+          this.value = "";
+
+          return;
+
+        }
+
+
+        if (file.size > 5 * 1024 * 1024) {
+
+          alert(
+            "รูปภาพต้องมีขนาดไม่เกิน 5MB"
+          );
+
+          this.value = "";
+
+          return;
+
+        }
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          function(e) {
+
+            const preview =
+              document.getElementById("preview");
+
+            preview.src =
+              e.target.result;
+
+            preview.style.display =
+              "block";
+
+          };
+
+
+        reader.readAsDataURL(file);
+
+      }
+    );
+
+
+  /* =========================================
+     ADD PRODUCT
+  ========================================= */
+
+  document
+    .getElementById("productForm")
+    .addEventListener(
+      "submit",
+      function(e) {
+
+        e.preventDefault();
+
+
+        const file =
+          document
+            .getElementById("imageInput")
+            .files[0];
+
+
+        if (!file) {
+
+          alert("กรุณาเลือกรูปสินค้า");
+
+          return;
+
+        }
+
+
+        const submitBtn =
+          document.getElementById("submitBtn");
+
+        submitBtn.disabled = true;
+
+        submitBtn.textContent =
+          "กำลังลงขาย...";
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          function(event) {
+
+            const newProduct = {
+
+              id:
+                Date.now(),
+
+              name:
+                document
+                  .getElementById("productName")
+                  .value
+                  .trim(),
+
+              price:
+                Number(
+                  document
+                    .getElementById("productPrice")
+                    .value
+                ),
+
+              condition:
+                document
+                  .getElementById("productCondition")
+                  .value,
+
+              location:
+                document
+                  .getElementById("productLocation")
+                  .value
+                  .trim(),
+
+              description:
+                document
+                  .getElementById("productDescription")
+                  .value
+                  .trim(),
+
+              image:
+                event.target.result
+
+            };
+
+
+            products.unshift(
+              newProduct
+            );
+
+
+            saveProducts();
+
+            renderProducts();
+
+
+            resetForm();
+
+            closeModal();
+
+
+            submitBtn.disabled = false;
+
+            submitBtn.textContent =
+              "ลงขายสินค้า";
+
+
+            alert(
+              "ลงขายสินค้าเรียบร้อยแล้ว 🎉"
+            );
+
+          };
+
+
+        reader.onerror =
+          function() {
+
+            submitBtn.disabled = false;
+
+            submitBtn.textContent =
+              "ลงขายสินค้า";
+
+            alert(
+              "ไม่สามารถอ่านรูปภาพได้"
+            );
+
+          };
+
+
+        reader.readAsDataURL(file);
+
+      }
+    );
+
+
+  /* =========================================
+     DELETE
+  ========================================= */
+
+  function deleteProduct(id) {
+
+    const product =
+      products.find(
+        item => item.id === id
+      );
+
+
+    if (!product) {
+
+      return;
+
+    }
+
+
+    const confirmDelete =
+      confirm(
+        `ต้องการลบสินค้า "${product.name}" ใช่หรือไม่?`
+      );
+
+
+    if (!confirmDelete) {
+
+      return;
+
+    }
+
+
+    products =
+      products.filter(
+        item => item.id !== id
+      );
+
+
+    saveProducts();
+
+    renderProducts();
+
+  }
+
+
+  /* =========================================
+     CONTACT
+  ========================================= */
+
+  function contactSeller(id) {
+
+    const product =
+      products.find(
+        item => item.id === id
+      );
+
+
+    if (!product) {
+
+      return;
+
+    }
+
+
+    alert(
+      `คุณสนใจสินค้า "${product.name}"\n\nระบบสามารถนำส่วนนี้ไปเชื่อมกับแชทของผู้ขายได้`
+    );
+
+  }
+
+
+  /* =========================================
+     CLOSE MODAL WHEN CLICK OUTSIDE
+  ========================================= */
+
+  document
+    .getElementById("sellModal")
+    .addEventListener(
+      "click",
+      function(e) {
+
+        if (e.target === this) {
+
+          closeModal();
+
+        }
+
+      }
+    );
+
+
+  /* =========================================
+     ESC TO CLOSE MODAL
+  ========================================= */
+
+  document.addEventListener(
+    "keydown",
+    function(e) {
+
+      if (
+        e.key === "Escape" &&
+        document
+          .getElementById("sellModal")
+          .classList
+          .contains("active")
+      ) {
+
+        closeModal();
+
+      }
+
+    }
+  );
+
+
+  /* =========================================
+     SEARCH EVENT
+  ========================================= */
+
+  document
+    .getElementById("searchInput")
+    .addEventListener(
+      "input",
+      searchProducts
+    );
+
+
+  /* =========================================
+     INITIAL
+  ========================================= */
+
+  renderProducts();
+
+</script>
+
+</body>
+</html>
+```
